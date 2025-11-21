@@ -1,0 +1,220 @@
+/* --- 1. DESIGN VARIABLES (The Palette) --- */
+:root {
+    --bg-color: #ffffff;          /* Pure White Background */
+    --paper-color: #fffcf5;       /* Warm Cream for the letter paper */
+    --text-color: #2c3e50;        /* Dark Blue/Grey for readability */
+    --accent-color: #e74c3c;      /* Romantic Red */
+    --gold-accent: #d4af37;       /* Gold border for premium feel */
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    --shadow-deep: 0 20px 40px rgba(0, 0, 0, 0.2); /* Deep shadow for pop-up */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    /* A subtle texture for the background so it isn't boring plain white */
+    background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Raleway', sans-serif;
+    overflow: hidden;
+}
+
+/* --- 2. MUSIC BUTTON (Darker so it is visible on white) --- */
+.music-control {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background: #fff;
+    border: 2px solid var(--text-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.music-control:hover {
+    transform: scale(1.1);
+    background: var(--text-color);
+    color: #fff;
+}
+
+/* --- 3. MAIN STAGE --- */
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px; /* 3D Depth */
+}
+
+/* --- 4. THE WRAPPER --- */
+.envelope-wrapper {
+    position: relative;
+    width: 320px;  /* Mobile friendly width */
+    height: 450px; /* Tall enough for the letter */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- 5. THE ENVELOPE COVER IMAGE (Front Layer) --- */
+.envelope-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures your image doesn't get cut off */
+    z-index: 5; /* Sits on top of the letter */
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+    transition: transform 0.5s ease;
+    
+    /* The "Floating" Animation */
+    animation: float 6s ease-in-out infinite;
+}
+
+/* --- 6. THE INVISIBLE TRIGGER (Interaction Layer) --- */
+.trigger-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* Topmost layer to catch swipes */
+    cursor: grab;
+}
+
+.trigger-area:active {
+    cursor: grabbing;
+}
+
+/* --- 7. THE HIDDEN LETTER (Back Layer) --- */
+.letter {
+    position: absolute;
+    width: 90%; /* Slightly smaller than the cover image */
+    height: 90%;
+    background: var(--paper-color);
+    z-index: 1; /* Starts BEHIND the image */
+    
+    /* Initial styling */
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0,0,0,0.05);
+    
+    /* Initial Positioning: Hidden behind image */
+    opacity: 0; 
+    transform: scale(0.9) translateY(20px);
+    
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Creative Touch: Double border effect for the letter */
+.letter::before {
+    content: '';
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 1px solid var(--gold-accent);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+/* --- 8. LETTER CONTENT STYLING --- */
+.letter-content {
+    opacity: 0; /* Text hides until open */
+    transition: opacity 0.8s ease 0.5s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.letter.open .letter-content {
+    opacity: 1;
+}
+
+.date {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    align-self: flex-end;
+    margin-bottom: 10px;
+}
+
+.letter h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.2rem;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.photo-frame {
+    width: 100%;
+    height: 150px;
+    background: #eee;
+    border: 5px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: rotate(-2deg); /* Cute tilt */
+    margin: 0 auto 15px auto;
+    overflow: hidden;
+}
+
+.photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.letter p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    margin-top: auto; /* Pushes signature to bottom */
+    text-align: right;
+}
+
+/* --- 9. ANIMATIONS --- */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); } /* Floats up */
+    100% { transform: translateY(0px); }
+}
+
+/* --- RESPONSIVE FIXES --- */
+@media (max-width: 400px) {
+    .envelope-wrapper {
+        width: 90vw; /* On small phones, take up 90% width */
+        height: auto;
+        aspect-ratio: 3/4;
+    }
+    
+    .letter h1 { font-size: 1.8rem; }
+    .letter p { font-size: 0.85rem; }
+}
