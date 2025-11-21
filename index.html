@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Raleway:wght@300;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --bg-color: #ffffff;
+            --paper-color: #fffcf5;
+            --text-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --gold-accent: #d4af37;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: 'Raleway', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 320px;
+            height: 500px; /* Made slightly taller to fit your text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* ENVELOPE IMAGE (Front) */
+        .envelope-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: contain;
+            z-index: 5;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* LETTER (Hidden Back) */
+        .letter {
+            position: absolute;
+            width: 95%; /* Wider to fit text */
+            height: 95%;
+            background: var(--paper-color);
+            z-index: 1;
+            border-radius: 8px;
+            padding: 20px; /* Reduced padding slightly for more space */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            opacity: 0; 
+            transform: scale(0.9) translateY(20px);
+            display: flex; flex-direction: column; gap: 10px;
+            overflow-y: auto; /* Allows scrolling if text is too long on small screens */
+        }
+
+        /* Hide scrollbar for clean look */
+        .letter::-webkit-scrollbar { display: none; }
+
+        .letter::before {
+            content: ''; position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 1px solid var(--gold-accent);
+            border-radius: 4px; pointer-events: none;
+        }
+
+        .letter-content {
+            opacity: 0; transition: opacity 0.8s ease 0.5s;
+            height: 100%; display: flex; flex-direction: column;
+        }
+        .letter.open .letter-content { opacity: 1; }
+
+        .date { font-size: 0.7rem; color: #888; text-transform: uppercase; align-self: flex-end; margin-bottom: 5px; }
+        
+        .letter h1 { 
+            font-family: 'Great Vibes', cursive; 
+            font-size: 2rem; 
+            color: var(--accent-color); 
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        
+        .letter p { 
+            font-size: 0.85rem; /* Adjusted font size for longer text */
+            line-height: 1.5; 
+            color: var(--text-color); 
+            font-weight: 500; 
+        }
+        
+        .signature { 
+            font-family: 'Great Vibes', cursive; 
+            font-size: 1.5rem; 
+            margin-top: auto; 
+            text-align: right; 
+            padding-bottom: 10px;
+        }
+
+        .photo-frame {
+            width: 100%; height: 130px;
+            background: #eee; border: 5px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            margin: 0 auto 10px auto;
+            overflow: hidden;
+            flex-shrink: 0; /* Prevents photo from squishing */
+        }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="assets/music/our-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div class="envelope-wrapper" id="envelopeWrapper">
+            
+            <div class="letter" id="letter">
+                <div class="letter-content">
+                    <div class="date">November 21, 2025</div>
+                    
+                    <h2>DEEAREST ANKITAAA,</h2>
+                    
+                    <div class="photo-frame">
+                        <img src="assets/images/us.jpg" alt="Us">
+                    </div>
+
+                    <p>
+                        I know times are hard and we are not talking much, but I just want to let you know I love you alot and you matter to me verry much. You are the only person who makes me really happy; I don't want anyone else.
+                        <br><br>
+                        Plus I know sometimes I get really hard to handle. Please don't unlove me for this, <i>jaisa bhee hu</i>, I just want to be yours and yours only foreverrr. No matter what, I promise I will behave nicely and will never make you feel bad for something I do.
+                        <br><br>
+                        I know sometimes I act toxic, maybe it's cause I do care for you alot and I can't control myself when it comes to you. You are the only person who will ever matter to me this much.
+                        <br><br>
+                        I just want you to be happy forever.
+                    </p>
+                    
+                    <div class="signature">Yours loving -ruuHANKK</div>
+                </div>
+            </div>
+            <img src="assets/images/letter_image.JPG" alt="Envelope" class="envelope-image" id="envelopeImage">
+            
+        </div>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT LOGIC ---
+        const wrapper = document.getElementById('envelopeWrapper');
+        const envelopeImage = document.getElementById('envelopeImage');
+        const letter = document.getElementById('letter');
+        const music = document.getElementById('bgMusic');
+
+        let isOpened = false;
+
+        function shootConfetti() {
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                const particleCount = 40 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, shapes: ['heart'], colors: ['#e74c3c', '#d4af37'] }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, shapes: ['heart'], colors: ['#e74c3c', '#d4af37'] }));
+            }, 250);
+        }
+
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+            music.play().catch(error => { console.log("Autoplay prevented by browser"); });
+
+            const tl = gsap.timeline();
+            tl.to(envelopeImage, { duration: 1, y: -50, rotation: -5, opacity: 0, ease: "power2.in" }) // Changed to slide UP slightly then vanish
+              .to(letter, { duration: 1.2, opacity: 1, y: 0, scale: 1, zIndex: 10, ease: "back.out(1.5)" }, "-=0.8")
+              .call(shootConfetti)
+              .call(() => { letter.classList.add('open'); });
+        }
+
+        wrapper.addEventListener('click', openEnvelope);
+        wrapper.addEventListener('touchstart', openEnvelope);
+    </script>
+</body>
+</html>
